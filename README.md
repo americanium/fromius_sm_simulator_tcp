@@ -43,4 +43,6 @@ Configuration data is swapped randomly when saving.
 
 Roadmap
 =======
-TBD
+o Solve issue with random saved and swapped data in configuration
+o Adding "plausibility check" of data to prevent from destroing Fronius Datamanager values.
+o Adding the possibility to simulatre more than 1 smart meter to use it for recording further meters (e.g. heat pump, ...)
