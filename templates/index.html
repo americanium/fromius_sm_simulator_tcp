@@ -1,0 +1,206 @@
+<script>
+
+$(function() {
+	
+	// PIDs
+	setInterval(function(){ update_pids(); }, 3000);
+	update_pids();
+
+});
+
+function update_pids()
+{
+
+	$.ajax( { 
+			type: 'POST',
+			url: './index.cgi',
+			data: { 
+				ajax: 'getpids', 
+			}
+		} )
+	.done(function(data) {
+		console.log( "update_pids", "success", data );
+		if (data.response) {
+			$("#servicestatus").attr("style", "background:#6dac20; color:black").html("<TMPL_VAR CONFIGURATION.serviceRunning> <span class='small'>PID: " + data.response + "</span>");
+		} else {
+			$("#servicestatus").attr("style", "background:#FF6339; color:black").html("<TMPL_VAR CONFIGURATION.serviceStopped>");
+		}
+
+	})
+	.fail(function(data) {
+		console.log( "update_pids", "fail", data );
+		$("#servicestatus").attr("style", "background:#dfdfdf; color:red").html("<TMPL_VAR "COMMON.HINT_FAILED">");
+	})
+	.always(function(data) {
+		console.log( "update_pids", "finish", data );
+	});
+}
+
+function servicerestart()
+{
+
+	$.ajax( { 
+			type: 'POST',
+			url: './index.cgi',
+			data: { 
+				ajax: 'servicerestart', 
+			}
+		} )
+	.done(function(data) {
+		console.log( "servicerestart", "success", data );
+	})
+	.fail(function(data) {
+		console.log( "servicerestart", "fail", data );
+	})
+	.always(function(data) {
+		console.log( "servicerestart", "finish", data );
+		update_pids();
+	});
+
+}
+</script>
+
+<style>
+.servicestatus {
+	display: grid;
+	grid-template-columns: auto auto auto auto;
+	grid-template-rows: 1fr;
+	gap: 0px 10px;
+	justify-content: center;
+	justify-items: center;
+	align-items: center;
+	text-shadow: none;
+}
+.status {
+	padding: 7px;
+	box-sizing: border-box;
+	border-radius: 5px 5px 5px 5px;
+	background: #dfdfdf;
+	border: 1px solid #7E7E7E;
+	width: 170px;
+	text-align: center;
+}
+</style>
+
+
+
+<div class="wide">Fronius SmartMeter Simulator</div>
+
+
+<p><TMPL_VAR BASIC.FROSIM_GENERAL_DESCRIPTION></p>
+<p><TMPL_VAR BASIC.FROSIM_CORR_DESCRIPTION></p>
+<p><b><TMPL_VAR BASIC.FROSIM_WARNING></bold></b></p>
+<br>
+
+<TMPL_VAR frmStart>
+
+<center>
+		<div style="display:flex;align-items:center;justify-content:center;width:100%">
+			<center>
+			<span id="owserverstate"></span>
+			&nbsp; &nbsp; &nbsp; &nbsp;
+			<a href="javascript:restartOWFS();" id="btnrestartowfs" data-role="button" data-inline="true" data-icon="refresh" data-mini="true"
+						data-transition="flow"><TMPL_VAR OWFS.BUTTON_RESTART></a>
+			</center>
+        	</div>
+	</center>
+
+
+<table class="formtable" border="0" width="100%">
+	<tr>
+		<td width="25%">
+		<label id="lblMQTTTopicConsumption"><TMPL_VAR lblMQTTTopicConsumption></label>	
+		</td>
+		<td width="50%">
+			<TMPL_VAR txtMQTTTopicConsumption>
+		</td>
+		<td width="25%">
+			&nbsp;
+		</td>
+	<tr>
+
+	<tr>
+	<td width="25%">
+		<label id="lblMQTTTopicImport"><TMPL_VAR lblMQTTTopicImport></label>	
+		</td>
+		<td width="50%">
+			<TMPL_VAR txtMQTTTopicImport>
+		</td>
+		<td width="25%">
+			&nbsp;
+		</td>
+	</tr>
+	
+	<td width="25%">
+		<label id="lblMQTTTopicExport"><TMPL_VAR lblMQTTTopicExport></label>	
+		</td>
+		<td width="50%">
+			<TMPL_VAR txtMQTTTopicExport>
+		</td>
+		<td width="25%">
+			&nbsp;
+		</td>
+	</tr>
+
+	<td width="25%">
+		<label id="lblCorrectionFactor"><TMPL_VAR lblCorrectionFactor></label>	
+		</td>
+		<td width="50%">
+			<TMPL_VAR txtCorrectionFactor>
+		</td>
+		<td width="25%">
+			&nbsp;
+		</td>
+	</tr>
+
+	<td width="25%">
+		<label id="lblSerialPort"><TMPL_VAR lblSerialPort></label>	
+		</td>
+		<td width="50%">
+			<TMPL_VAR txtSerialPort>
+		</td>
+		<td width="25%">
+			&nbsp;
+		</td>
+	</tr>
+
+<tr>
+	<td width="25%">
+		&nbsp;
+	</td>
+	<td width="50%">
+		<table border="0" width="100%">
+			<tr>
+				<td width="49%"><TMPL_VAR btnSave></td>
+				<td>&nbsp;</td>
+				<td width="49%"><TMPL_VAR btnReStart></td>
+			</tr>
+		</table>
+
+<tr>
+	<td width="25%">
+	&nbsp;
+	</td>
+	<td width="50%">
+	<TMPL_VAR btnStop>
+	</td>
+</tr>
+</table>
+
+<div class="servicestatus">
+	<div>
+		Service Status:
+	</div>
+	<div class="status" id="servicestatus">
+		<TMPL_VAR CONFIGURATION.serviceUnknown>
+	</div>
+	<div>
+		<a href="#" onclick="servicerestart();return false;" class="ui-btn ui-icon-refresh ui-btn-icon-notext ui-corner-all">Refresh</a>
+	</div>
+
+</div>
+
+<br><br>
+
+<TMPL_VAR frmEnd>
+
