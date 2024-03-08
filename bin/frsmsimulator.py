@@ -157,13 +157,12 @@ MQTT_TOPIC_TOTAL_IMPORT = config.get('CONFIGURATION','TOPIC_TOTAL_IMPORT')
 MQTT_TOPIC_TOTAL_EXPORT = config.get('CONFIGURATION','TOPIC_TOTAL_EXPORT')
 corrfactor = config.get('CONFIGURATION','CORRFACTOR')
 i_corrfactor = int(corrfactor)
-serialport = config.get('CONFIGURATION','SERIAL_PORT')
+modbusport = config.get('CONFIGURATION','MODBUS_PORT')
 
 print (MQTT_TOPIC_TOTAL_EXPORT)
 print (MQTT_TOPIC_TOTAL_IMPORT)
 print (MQTT_TOPIC_CONSUMPTION)
-
-modbus_port = 502
+print (modbusport)
 
 ###############################################################
 # MQTT service
@@ -225,10 +224,10 @@ def on_message(client, userdata, message):
 
     print("Received message '" + str(message.payload.decode("utf-8")) + "' on topic '"
         + message.topic + "' with QoS " + str(message.qos))
-    
+
 #    if not isfloat(message.payload):
 #        return
-    
+
     lock.acquire()
 
     if message.topic == MQTT_TOPIC_CONSUMPTION:
@@ -383,7 +382,7 @@ def run_updating_server():
                 83,109,97,114,116,32,77,101,116,101,114,32,54,51,65,0, #Device Model "Smart Meter
                 0,0,0,0,0,0,0,0,                                       #Options N/A
                 0,0,0,0,0,0,0,0,                                       #Software Version  N/A
-                48,48,48,48,48,48,48,49,0,0,0,0,0,0,0,0,               #Serial Number: 00000
+                48,48,48,48,48,48,48,48,0,0,0,0,0,0,0,0,               #Serial Number: 00000
                 240],                                                  #Modbus TCP Address: 
         40070: [213],
         40071: [124],
@@ -421,11 +420,11 @@ def run_updating_server():
     time = 5  # 5 seconds delay
     rt = RepeatedTimer(time, updating_writer, a_context)
 
-    print("### start server, listening on " + str(modbus_port))
+    print("### start server, listening on " + str(modbusport))
     #address = ("", modbus_port)
     StartTcpServer(
             context=a_context,  
-            address=("", 1502),
+            address=("", modbusport),
             framer=ModbusSocketFramer,
             #allow_reuse_address=True,
         )

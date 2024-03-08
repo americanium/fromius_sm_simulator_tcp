@@ -79,7 +79,7 @@ my %L = LoxBerry::Web::readlanguage($template, "language.ini");
 
 # Wir Übergeben die Titelzeile (mit Versionsnummer), einen Link ins Wiki und das Hilfe-Template.
 # Um die Sprache der Hilfe brauchen wir uns im Code nicht weiter zu kümmern.
-LoxBerry::Web::lbheader("Sample Plugin for Perl V$version", "http://www.loxwiki.eu/x/2wN7AQ", "help.html");
+LoxBerry::Web::lbheader("Fronius SmartMeter Simulator TCP", "http://www.loxwiki.eu/x/2wN7AQ", "help.html");
   
 
 # ---------------------------------------------------
@@ -88,10 +88,10 @@ LoxBerry::Web::lbheader("Sample Plugin for Perl V$version", "http://www.loxwiki.
 if ($R::btnSave)
 {
 	$pcfg->param('CONFIGURATION.TOPIC_CONSUMPTION', $R::txtMQTTTopicConsumption);
-	$pcfg->param('CONFIGURATION.TOPIC_TOTAL_IMPORT', $R::txtMQTTTopicExport);
-	$pcfg->param('CONFIGURATION.TOPIC_TOTAL_EXPORT', $R::txtMQTTTopicImport);
+	$pcfg->param('CONFIGURATION.TOPIC_TOTAL_IMPORT', $R::txtMQTTTopicImport);
+	$pcfg->param('CONFIGURATION.TOPIC_TOTAL_EXPORT', $R::txtMQTTTopicExport);
    	$pcfg->param('CONFIGURATION.CORRFACTOR', $R::txtCorrectionFactor);
-    	$pcfg->param('CONFIGURATION.SERIAL_PORT', $R::txtSerialPort);
+    	$pcfg->param('CONFIGURATION.MODBUS_PORT', $R::txtModbusPort);
 
 	$pcfg->save();
 }
@@ -133,8 +133,6 @@ my $frmEnd = $cgi->end_form();
 $template->param( frmEnd => $frmEnd );
 
 
-
-
 # ---------------------------------------------------
 # Control for "txtMQTTTopicConsumption" Textfield
 # ---------------------------------------------------
@@ -172,13 +170,13 @@ my $txtCorrectionFactor = $cgi->textfield(
 $template->param( txtCorrectionFactor => $txtCorrectionFactor );
 
 # ---------------------------------------------------
-# Control for "txtSerialPort" Textfield
+# Control for "txtModbusPort" Textfield
 # ---------------------------------------------------
-my $txtSerialPort = $cgi->textfield(
-      -name    => 'txtSerialPort',
-      -default => $pcfg->param('CONFIGURATION.SERIAL_PORT'),
+my $txtModbusPort = $cgi->textfield(
+      -name    => 'txtModbusPort',
+      -default => $pcfg->param('CONFIGURATION.MODBUS_PORT'),
   );
-$template->param( txtSerialPort => $txtSerialPort );
+$template->param( txtModbusPort => $txtModbusPort );
 
 # ---------------------------------------------------
 # Control for "btnSave" Button
@@ -243,7 +241,7 @@ $template->param( lblMQTTTopicConsumption => $L{'CONFIGURATION.lblMQTTTopicConsu
 $template->param( lblMQTTTopicImport => $L{'CONFIGURATION.lblMQTTTopicImport'}  );
 $template->param( lblMQTTTopicExport => $L{'CONFIGURATION.lblMQTTTopicExport'}  );
 $template->param( lblCorrectionFactor => $L{'CONFIGURATION.lblCorrectionFactor'}  );
-$template->param( lblSerialPort => $L{'CONFIGURATION.lblSerialPort'}  );
+$template->param( lblModbusPort => $L{'CONFIGURATION.lblModbusPort'}  );
 
 
 # Nun wird das Template ausgegeben.
